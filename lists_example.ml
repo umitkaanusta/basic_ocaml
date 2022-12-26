@@ -109,3 +109,21 @@ let list_sum_tr lst = list_sum_helper 0 lst
 
 let _ = print_endline "\nSum up list [1; 2; 3; 4] with tail recursion:"
 let _ = list_sum_tr a |> string_of_int |> print_endline
+
+
+(* VARIANTS (Enum-like things) *)
+(* Variant is a data type representing a value that is one of several possibilities. *)
+(* Each "possibility" a constructor, there should be NO UNUSED CONSTRUCTORS. *)
+type coin_face = Heads | Tails
+let heads : coin_face = Heads (* val heads : coin_face = Heads *)
+let tails : coin_face = Tails
+(* Having defined all possibilities through variants, it perfectly enables pattern-matching *)
+let int_of_coin_face face =
+  match face with 
+  | Heads -> 0
+  | Tails -> 1
+(* val int_of_day : day -> int <fun> *)
+let _ = print_endline "\nConverting 'heads : coin_face' to int:"
+let _ = int_of_coin_face heads |> string_of_int |> print_endline
+let _ = print_endline "Converting 'tails : coin_face' to int:"
+let _ = int_of_coin_face tails |> string_of_int |> print_endline
