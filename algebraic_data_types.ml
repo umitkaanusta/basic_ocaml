@@ -37,3 +37,44 @@ let vec2 : vector = [4.; 5.; 6.]
 let _ = print_endline "\nAdding vectors [1.; 2.; 3.;] and [4.; 5.; 6.;]"
 let _ = vec_print (vec_add vec1 vec2)
 let _ = vec_print (vec_add_opt vec1 vec2)
+
+
+(* OPTIONS
+ * Offers 'maybe' type to cover possible Nones
+ * without ever using null pointer and the risks associated
+ * a.k.a the billion-dollar mistake by Sir Tony Hoare *)
+
+(* A simple function *)
+let get_val o = 
+  match o with
+  | None -> "null"
+  | Some x -> string_of_int x
+
+let _ = print_endline "\nPrinting the both possible states of an int option"
+let notnull_int_option = Some 5
+let null_int_option = None
+let _ = get_val notnull_int_option |> print_endline
+let _ = get_val null_int_option |> print_endline
+
+(* Function computing max of a list 
+ * that also covers the case when the list is empty *)
+let rec list_max = function
+  | [] -> None
+  | h :: t -> begin
+      (* With the second match, we open the box 't' *)
+      match list_max t with
+      (* If the rest is none, then head is the max (1 element) *)
+      | None -> Some h
+      (* If not, take the max of head & m, recur *)
+      | Some m -> Some (max h m)
+    end
+
+let print_int_option = function
+  | None -> print_endline "None";
+  | Some (x : int) -> print_endline (string_of_int x)
+
+let some_list = [2; 3; 99; 4; 5]
+let empty_list = []
+let _ = print_endline "\nUsing list_max on nonempty and empty lists:"
+let _ = list_max some_list |> print_int_option
+let _ = list_max empty_list |> print_int_option
