@@ -118,3 +118,48 @@ let _ = print_int_option sides_of_rectangle
 let _ = print_endline "Lookup some non-existent key:"
 let weird_value = (al_lookup "tiger" al_sides)
 let _ = print_int_option weird_value
+
+
+(* ALGEBRAIC DATA TYPES *)
+
+(* Variants (enums) that carry data *)
+(* type point = float * float (defined above) *)
+type shape =
+  | Point of point
+  | Circle of {center : point; radius : float}
+  | Rectangle of {lower_left : point; upper_right : point}
+  (* | Rectangle of point * point is ok too, records are just more readable *)
+
+let c1 = Circle {center = (0., 0.); radius = 1.}
+let r1 = Rectangle {lower_left = (-1., -1.); 
+                    upper_right = (1., 1.)}
+let p1 = Point (31., 10.)
+
+let center_of_shape s =
+  (* good old pattern matching *)
+  match s with
+  | Point _ -> s
+  | Circle {center; _} -> Point center
+  | Rectangle {lower_left; upper_right} -> begin
+    let x1, y1 = lower_left in 
+    let x2, y2 = upper_right in
+    Point ((x1 +. x2) /. 2., (y1 +. y2) /. 2.)
+  end
+
+(* same function, better pattern matching *)
+let center_of_shape_better s =
+  match s with
+  | Point _ -> s
+  | Circle {center; _} -> Point center
+  | Rectangle {lower_left = (x1, y1); upper_right = (x2, y2)} ->
+    Point ((x1 +. x2) /. 2., (y1 +. y2) /. 2.)
+
+let print_point = function
+  | Point (x, y) -> Printf.printf "(%f, %f)\n" x y
+  | Circle {center = _; _} -> failwith "only points covered"
+  | Rectangle {lower_left = _; _} -> failwith "only points covered"
+
+let _ = print_endline "\nComputing center of a point, center, rectangle:"
+let _ = center_of_shape_better p1 |> print_point
+let _ = center_of_shape c1 |> print_point
+let _ = center_of_shape_better r1 |> print_point
